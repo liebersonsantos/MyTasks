@@ -3,9 +3,7 @@ package com.example.mytasks.repository
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
-import com.example.mytasks.entities.PriorityEntity
 import com.example.mytasks.entities.TaskEntity
-import com.example.mytasks.entities.UserEntity
 import java.lang.Exception
 
 class TaskRepository private constructor(context: Context) {
@@ -120,7 +118,7 @@ class TaskRepository private constructor(context: Context) {
 
     }
 
-    fun getList(userId: Int): MutableList<TaskEntity> {
+    fun getList(userId: Int, mTaskFilter: Int): MutableList<TaskEntity> {
         val list = mutableListOf<TaskEntity>()
 
         try {
@@ -128,7 +126,8 @@ class TaskRepository private constructor(context: Context) {
             val db = mTaskDataBase.readableDatabase
 
             cursor = db.rawQuery("SELECT * FROM ${DataBaseConstants.TASK.TABLE_NAME} " +
-                    "WHERE ${DataBaseConstants.TASK.COLUMNS.USER_ID} = $userId", null)
+                    "WHERE ${DataBaseConstants.TASK.COLUMNS.USER_ID} = $userId " +
+                    "AND ${DataBaseConstants.TASK.COLUMNS.COMPLETE} = $mTaskFilter", null)
 
             if (cursor.count > 0) {
                 while (cursor.moveToNext()) {

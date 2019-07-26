@@ -4,6 +4,7 @@ import android.app.DatePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import android.widget.DatePicker
@@ -31,6 +32,8 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
     private var mListPriorityEntity: MutableList<PriorityEntity> = mutableListOf()
     private var mListPrioritiesId: MutableList<Int> = mutableListOf()
 
+    private var mTaskId: Int = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_task_form)
@@ -41,6 +44,37 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
 
         setListeners()
         loadPriorities()
+
+        loadDataFromActivity()
+    }
+
+    private fun loadDataFromActivity() {
+        val bundle = intent.extras
+
+        if (bundle != null) {
+            mTaskId = bundle.getInt(TaskConstants.TASK_ID)
+
+            val task = mTaskBusiness.get(mTaskId)
+            task?.let { task ->
+                editDescription.setText(task.description)
+                btnDate.setText(task.dueDate)
+                checkComplete.isChecked = task.complete
+                spinnerPriority.setSelection(getIndex(task.priorityId))
+            }
+        }
+
+    }
+
+    private fun getIndex(id: Int): Int {
+        var index = 0
+        for (i in 0..mListPriorityEntity.size){
+            if (mListPriorityEntity[i].id == id){
+                index = i
+                break
+            }
+        }
+
+        return index
     }
 
     private fun setListeners() {
@@ -50,7 +84,7 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
 
     private fun loadPriorities() {
         mListPriorityEntity = mPriorityBusiness.getList()
-        val listPriorities =  mListPriorityEntity.map { it.description }
+        val listPriorities = mListPriorityEntity.map { it.description }
         mListPrioritiesId = mListPriorityEntity.map { it.id }.toMutableList()
 
 
@@ -59,7 +93,7 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
     }
 
     override fun onClick(view: View?) {
-        when(view?.id){
+        when (view?.id) {
             R.id.btnDate -> openDatePickerDialog()
             R.id.btnSaveDate -> handleSave()
         }
@@ -79,7 +113,7 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
 
             finish()
 
-        }catch (e: Exception){
+        } catch (e: Exception) {
             Toast.makeText(this@TaskFormActivity, R.string.generic_error, Toast.LENGTH_LONG).show()
         }
 
@@ -104,8 +138,11 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
     }
 
     companion object {
-        fun getIntent(context: Context): Intent {
-            return Intent(context, TaskFormActivity::class.java)
+        fun getIntent(context: Context, taskEntity: TaskEntity?): Intent {
+            return Intent(context, TaskFormActivity::class.java).apply {
+                putExtra(TaskConstants.TASK_ID, taskEntity?.id)
+            }
         }
     }
 }
+

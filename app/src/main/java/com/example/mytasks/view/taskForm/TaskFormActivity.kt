@@ -55,11 +55,11 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
             mTaskId = bundle.getInt(TaskConstants.TASK_ID)
 
             val task = mTaskBusiness.get(mTaskId)
-            task?.let { task ->
-                editDescription.setText(task.description)
-                btnDate.setText(task.dueDate)
-                checkComplete.isChecked = task.complete
-                spinnerPriority.setSelection(getIndex(task.priorityId))
+            task?.let { taskData ->
+                editDescription.setText(taskData.description)
+                btnDate.text = taskData.dueDate
+                checkComplete.isChecked = taskData.complete
+                spinnerPriority.setSelection(getIndex(taskData.priorityId))
             }
         }
 
@@ -108,8 +108,25 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
             val dueDate = btnDate.text.toString()
             val userId = mSecurity.getStoredString(TaskConstants.USER_ID)!!.toInt()
 
-            val taskEntity = TaskEntity(0, userId, priorityId, description, dueDate, complete)
-            mTaskBusiness.insert(taskEntity)
+            val taskEntity = TaskEntity(mTaskId, userId, priorityId, description, dueDate, complete)
+
+            if (mTaskId == 0){
+                mTaskBusiness.insert(taskEntity)
+                Log.d("TASK_ENTITY", "insert -> " + taskId)
+                Toast.makeText(this@TaskFormActivity, "Tarefa incluída com sucesso", Toast.LENGTH_LONG).show()
+            }else {
+                mTaskBusiness.update(taskEntity)
+                Log.d("TASK_ENTITY", "update -> " + taskId)
+                Toast.makeText(this@TaskFormActivity, "Tarefa alterada com sucesso", Toast.LENGTH_LONG).show()
+            }
+
+
+
+
+
+
+
+
 
             finish()
 

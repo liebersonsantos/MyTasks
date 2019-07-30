@@ -120,14 +120,6 @@ class TaskFormActivity : AppCompatActivity(), View.OnClickListener, DatePickerDi
                 Toast.makeText(this@TaskFormActivity, "Tarefa alterada com sucesso", Toast.LENGTH_LONG).show()
             }
 
-
-
-
-
-
-
-
-
             finish()
 
         } catch (e: Exception) {

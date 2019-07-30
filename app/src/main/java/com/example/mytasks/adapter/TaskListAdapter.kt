@@ -12,12 +12,13 @@ import kotlinx.android.synthetic.main.row_task_list.view.*
 
 class TaskListAdapter(
     val taskList: MutableList<TaskEntity>,
-    val itemClickListener: ((task: TaskEntity) -> Unit)?
+    val itemClickListener: ((task: TaskEntity) -> Unit)?,
+    val onDeleteItemClick: ((taskId: Int) -> Unit)?
 ) : RecyclerView.Adapter<TaskListViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskListViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.row_task_list, parent, false)
-        return TaskListViewHolder(itemView, itemClickListener)
+        return TaskListViewHolder(itemView, itemClickListener, onDeleteItemClick)
     }
 
     override fun getItemCount(): Int {
@@ -31,7 +32,8 @@ class TaskListAdapter(
 
     class TaskListViewHolder(
         itemView: View,
-        val itemClickListener: ((task: TaskEntity) -> Unit)?
+        val itemClickListener: ((task: TaskEntity) -> Unit)?,
+        val onDeleteItemClick: ((taskId: Int) -> Unit)?
     ) : RecyclerView.ViewHolder(itemView) {
 
         private val description = itemView.textDescription
@@ -51,6 +53,10 @@ class TaskListAdapter(
 
             }
 
+            itemView.setOnLongClickListener {
+                onDeleteItemClick?.invoke(taskList.id)
+                true
+            }
 
         }
 

@@ -2,16 +2,15 @@ package com.example.mytasks.view.login
 
 import android.content.Context
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.example.mytasks.R
 import com.example.mytasks.TasksConstants.TaskConstants
 import com.example.mytasks.business.UserBusiness
 import com.example.mytasks.util.SecurityPreferences
 import com.example.mytasks.view.main.MainActivity
-import com.example.mytasks.view.register.RegisterActivity
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener {

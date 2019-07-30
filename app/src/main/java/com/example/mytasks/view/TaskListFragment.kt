@@ -32,20 +32,20 @@ class TaskListFragment : Fragment(), View.OnClickListener {
         mTaskBusiness = TaskBusiness(mContext)
         mSecurityPreferences = SecurityPreferences(mContext)
 
-        mListener = object: OnTaskListFragmentInteractionListener{
+        mListener = object : OnTaskListFragmentInteractionListener {
             override fun onListClick(taskId: Int) {
 
             }
         }
 
-        if (arguments != null){
+        if (arguments != null) {
             mTaskFilter = arguments!!.getInt(TaskConstants.KEY_FILTER)
         }
 
         mRecyclerViewListFragment = rootView.findViewById(R.id.recyclerViewListFragment)
         rootView.findViewById<FloatingActionButton>(R.id.fabAddTask).setOnClickListener(this)
 
-        mRecyclerViewListFragment.adapter = TaskListAdapter(mutableListOf(), null)
+        mRecyclerViewListFragment.adapter = TaskListAdapter(mutableListOf(), null, null)
         mRecyclerViewListFragment.layoutManager = LinearLayoutManager(mContext)
 
         return rootView
@@ -56,15 +56,24 @@ class TaskListFragment : Fragment(), View.OnClickListener {
         loadTasks()
     }
 
+//    private fun loadTasks() {
+//        mRecyclerViewListFragment.adapter = TaskListAdapter(mTaskBusiness.getList(mTaskFilter)){ task ->
+//            val intent = TaskFormActivity.getIntent(mContext, task)
+//            mContext.startActivity(intent)
+//        }
+//    }
+
     private fun loadTasks() {
-        mRecyclerViewListFragment.adapter = TaskListAdapter(mTaskBusiness.getList(mTaskFilter)){ task ->
+        mRecyclerViewListFragment.adapter = TaskListAdapter(mTaskBusiness.getList(mTaskFilter), { task ->
             val intent = TaskFormActivity.getIntent(mContext, task)
             mContext.startActivity(intent)
-        }
+        }, { taskId ->
+
+        })
     }
 
     override fun onClick(view: View?) {
-        when(view?.id){
+        when (view?.id) {
             R.id.fabAddTask -> {
                 val intent = TaskFormActivity.getIntent(mContext, null)
                 mContext.startActivity(intent)
